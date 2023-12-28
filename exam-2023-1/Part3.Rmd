@@ -1,0 +1,202 @@
+---
+title: "Part3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+set.seed(42)
+```
+
+### Question (a)
+
+```{r, fig.width=5, fig.height=5}
+library(MASS)
+
+generate_dataset <- function(N, eps, p)
+{
+  mu_0 = c(0, 0)
+  sg_0 = matrix(c(0.5,0,0,0.5),2,2)
+  mu_1 = c(eps, 0)
+  sg_1 = matrix(c(0.4,0,0,0.4),2,2)
+  Y = c()
+  X = matrix(0, N, 2)
+  B = runif(N)
+  for (i in 1:N)
+  {
+    Bi = runif(1)
+    if(Bi < p)
+    {
+      Yi = 1
+      Xi = mvrnorm(n=1, mu=mu_0, Sigma=sg_0)
+    }
+    else
+    {
+      Yi = 0
+      Xi = mvrnorm(n=1, mu=mu_1, Sigma=sg_1)
+    }
+    Y = c(Y, Yi)
+    X[i,] = Xi
+  }
+  newList <- list("X" = X, "y" = Y)
+}
+
+N_train = 50
+N_test = 1000
+eps = 1
+p = 0.2
+D_train = generate_dataset(N=N_train, eps, p)
+D_test = generate_dataset(N=N_test, eps, p)
+
+X_train = D_train$X
+y_train = D_train$y
+X_test = D_test$X
+y_test = D_test$y
+
+X = rbind(X_train, X_test)
+y = rbind(y_train, y_test)
+
+plot(X[,1], X[,2], col='white', xlab='X_1', ylab='X_2', xlim=c(-3, +3), ylim=c(-3, +3))
+
+points(X_train[y_train==0,1], X_train[y_train==0,2], col='blue', pch=1)
+points(X_train[y_train==1,1], X_train[y_train==1,2], col='red', pch=1)
+points(X_test[y_test==0,1], X_test[y_test==0,2], col='blue', pch=6)
+points(X_test[y_test==1,1], X_test[y_test==1,2], col='red', pch=6)
+
+
+```
+
+### Question (b)
+
+We know that the ratio of the probabilities in terms of $\mathbf{x} = (x_1, x_2)$ is
+$$
+R(x_1, x_2)  = \dfrac{\text{Prob}(Y = 1 \mid \mathbf{x})}{\text{Prob}(Y = 0 \mid \mathbf{x})} = \dfrac{\mathcal{N}(\boldsymbol{\mu}_1, \boldsymbol{\Sigma}_1) \times p}{\mathcal{N}(\boldsymbol{\mu}_0, \boldsymbol{\Sigma}_0) \times (1-p)}
+$$
+with
+$$
+\mathcal{N}(\boldsymbol{\mu}_1, \boldsymbol{\Sigma}_1) = \dfrac{1}{\pi} \times \exp\Big(-\mathbf{x}^\top\mathbf{x} \Big) = \dfrac{1}{\pi} \times \exp\Big(-(x_1^2 + x_2^2) \Big)
+$$
+and
+$$
+\mathcal{N}(\boldsymbol{\mu}_0, \boldsymbol{\Sigma}_0) = \dfrac{1.25}{\pi} \times \exp\left(-1.25\Big((x_1 - \varepsilon)^2 + x_2^2\Big)\right)
+$$
+so that we can simplify to get
+$$
+R(x_1, x_2)  = \dfrac{\text{Prob}(Y = 1 \mid \mathbf{x})}{\text{Prob}(Y = 0 \mid \mathbf{x})} = \dfrac{1}{1.25} \times \exp\left(1.25\Big((x_1 - \varepsilon)^2 + x_2^2\Big) -(x_1^2 + x_2^2)\right) \times \dfrac{p}{(1-p)}
+$$
+and going further we get
+$$
+R(x_1, x_2) = \dfrac{\text{Prob}(Y = 1 \mid \mathbf{x})}{\text{Prob}(Y = 0 \mid \mathbf{x})} = \exp\Big(0.25~x_1^2 - 2.5~x_1\varepsilon + 1.25~\varepsilon^2 \Big) \times \dfrac{0.8~p}{(1-p)}
+$$
+
+The Bayes classifier is given by
+$$
+h(\mathbf{x}) = h(x_1, x_2) = \mathbf{1}_{\{R(x_1, x_2) > 1\}}
+$$
+and the boundary is defined by the points in which $R(x_1, x_2) = 1$ so we have
+$$
+\exp\Big(0.25~x_1^2 - 2.5~x_1\varepsilon + 1.25~\varepsilon^2 \Big) \times \dfrac{0.8~p}{(1-p)} = 1
+$$
+which is the same as saying they are the points $(x_1, x_2)$ for which
+$$
+\dfrac{1}{4}x_1^2 - \dfrac{5\varepsilon}{2}x_1 + \dfrac{5}{4}\varepsilon^2 = \log\left(\dfrac{(1-p)}{0.8p}\right)
+$$
+
+### Question (c)
+
+```{r}
+bayes_classifier <- function(x, eps, p)
+{
+  x1 = x[1]
+  R = exp(0.25*x1^2 - 2.5*x1*eps + 1.25*eps^2) * 0.8*p/(1-p)
+  if(R > 1)
+  {
+    return(1)
+  }
+  else{
+    return(0)
+  }
+}
+
+acc = c()
+for (i in 1:N_test)
+{
+  Y_pred = bayes_classifier(D_test$X[i,], eps, p)
+  Y_true = D_test$y[i]
+  acc = c(acc, Y_pred == Y_true)
+}
+acc = sum(acc) / N_test
+sprintf("score with Bayes classifier: %.2f", acc)
+```
+
+The parameter $\varepsilon$ indicates how far the two classes are and, therefore, it determines how difficult is the problem of classifying the data points. With larger $\varepsilon$ the classes are more distant from each other and the classification scores have the tendency to increase.
+
+### Question (d)
+
+The class conditional pdfs are Gaussian and each one has a different covariance. Therefore, QDA seems like a good choice. Note, however, that since the covariance matrices are diagonal, the coordinates are independent, so the most natural choice is in fact the Gaussian naive Bayes classifier. 
+
+### Question (e)
+
+```{r}
+library(MASS)
+df_train = data.frame(y_train, X_train)
+clf_lda = lda(y_train ~ ., data=df_train)
+df_test = data.frame(X_test)
+pred = predict(clf_lda, newdata=df_test)
+y_pred = pred$class
+acc = sum(y_pred == y_test) / N_test
+sprintf("score with LDA: %.2f", acc)
+```
+
+```{r}
+df_train = data.frame(y_train, X_train)
+clf_qda = qda(y_train ~ ., data=df_train)
+df_test = data.frame(X_test)
+pred = predict(clf_qda, newdata=df_test)
+y_pred = pred$class
+acc = sum(y_pred == y_test) / N_test
+sprintf("score with QDA: %.2f", acc)
+```
+
+```{r}
+df_train = data.frame(y_train, X_train)
+clf_lgr = glm(y_train ~ ., family=binomial, data=df_train)
+df_test = data.frame(X_test)
+probabilities = predict(clf_lgr, newdata=df_test, type="response")
+y_pred <- ifelse(probabilities > 0.5, 1, 0)
+acc = sum(y_pred == y_test) / N_test
+sprintf("score with Logistic Regression: %.2f", acc)
+```
+
+The scores with LDA, QDA, and logistic regression are slightly inferior to the score with the Bayes classifier.
+
+### Question (f)
+
+```{r}
+
+p = 0.8
+D_test_prime = generate_dataset(N=N_test, eps, p)
+X_test_prime = D_test_prime$X
+y_test_prime = D_test_prime$y
+df_test_prime = data.frame(X_test_prime)
+
+pred = predict(clf_lda, newdata=df_test_prime)
+y_pred = pred$class
+acc = sum(y_pred == y_test_prime) / N_test
+sprintf("score with LDA: %.2f", acc)
+
+pred = predict(clf_qda, newdata=df_test_prime)
+y_pred = pred$class
+acc = sum(y_pred == y_test_prime) / N_test
+sprintf("score with QDA: %.2f", acc)
+
+probabilities = predict(clf_lgr, newdata=df_test_prime, type="response")
+y_pred <- ifelse(probabilities > 0.5, 1, 0)
+acc = sum(y_pred == y_test_prime) / N_test
+sprintf("score with Logistic Regression: %.2f", acc)
+```
+
+The scores have decreases for all three classifiers. This is not surprising, since the statistics of the data points in the test set are **different** from those in the training dataset. This is a typical setting of transfer learning.

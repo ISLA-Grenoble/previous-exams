@@ -1,0 +1,59 @@
+---
+title: "Exercise 1: regression"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+Car consumptions are measured in MPGs (miles per gallon): higher MPG values mean that the car is able to do more miles with one gallon of fuel.
+
+To determine the car features having an effect on consumption, we use the following linear regression model.
+```{r}
+M <- lm(mpg~., data=mtcars)
+summary(M)
+```
+
+## Question 1: ##
+
+Which predictors seem to have an effect on mpg? 
+
+Make your criterion explicit.
+
+### Answer: ###
+
+## Question 2: ##
+
+Provide a 95% confidence interval for the ```carb``` parameter. 
+
+What can you deduce from the fact that 0 is in the confidence interval?
+
+Provide descriptions and formulas to explain what the quantity in column 
+```Pr(>|t|)``` represents.
+
+### Answer: ### 
+
+## Question 3: ##
+
+Provide descriptions and formulas to explain what ```p-value: 3.793e-07``` represents. 
+
+What to conclude from this value?
+
+Does it seem in discordance with your answer in question 1? In this case, what could explain such discordance?
+
+### Answer: ### 
+
+
+## Question 4: ##
+
+What strategy could be used to obtain some linear regression model with a maximal number of predictors, all of which having significant effect at level 5%? Can you run it in practice? If yes, provide the estimates. If not, provide the reason for it.
+
+### Answer: ### 
+
+
+## Question 5: ##
+
+Describe and run some algorithm to find the best model in some sense.
+
+
+### Answer: ### 

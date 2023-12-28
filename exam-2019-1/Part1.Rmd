@@ -1,0 +1,80 @@
+---
+title: "Exercise 1"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+
+To analyse student flows from 10 countries, 206,796 students are considered. For each of them, the country of origin (referred to by O) and arrival (referred to by A) are recorded (for example GreeceO is Greece as country of origin).
+
+This data set is stored as file *Instructions/migrations.csv* containing a matrix $A$ whose columns correspond to countries of origin $o$, lines to countries of arrival $a$ such that $A_{a, o}$ contains the number of students moving from $o$ to $a$.
+
+The data set is loaded as follows:
+```{r}
+A <- read.csv("migrations.csv",sep=";")
+library(igraph)
+```
+
+The associated graph is denoted by $G$.
+
+## Question 1: ##
+
+In the R chunk below:
+
+   - In the literature, how is matrix $A$ referred to?
+   - Comment and justify the values of parameters ```mode```, ```weighted``` and ```diag```.
+   
+  
+```{r}
+G <- graph.adjacency(as.matrix(A), mode="directed", weighted=TRUE, diag=FALSE)
+```
+
+### Answer: ###
+
+## Question 2: ##
+
+Propose and run some R code to plot the graph, using one vertex per country. This means that each country is represented exactly once. Use arc widths proportional to their weights.
+
+Use the ```layout.auto``` layout and scale the weights by some 1/3,000 factor.
+
+### Answer: ### 
+
+## Question 3: ##
+
+Using visual information from the graph obtained in question 2 only, what are the most striking features of student flows?
+
+### Answer: ### 
+
+## Question 4: ##
+
+Propose a formula for the order of directed graphs, defined as the ratio of the actual number of arcs on the maximal number of arcs (forbidding self-loops).
+
+Provide the R commands to compute the graph order, size, density and diameter (ignoring weights) and provide those values. 
+
+### Answer: ### 
+
+## Question 5: ##
+
+The graph is now displayed as an undirected, weighted bipartite graph using the following chunk. It is denoted by $B$.
+```{r, fig.height=12, fig.width=12}
+B <- graph.incidence(A, weighted = TRUE)
+V(B)$color <- V(B)$type
+V(B)$label.cex <- 0.8
+V(B)$color=gsub("FALSE","red",V(B)$color)
+V(B)$color=gsub("TRUE","green",V(B)$color)
+plot(B, edge.color="gray30",edge.width=E(B)$weight/3000, layout=layout_as_bipartite)
+```
+
+Perform graph clustering on $B$ and justify your choice of algorithm. Cluster may contain both countries of departure and arrival. A same country may or not be in several clusters (once as a country of departure and once of arrival).
+
+Plot the yielded graph partition using different vertex colors for clusters. 
+
+### Answer: ### 
+
+## Question 6: ##
+
+Provide an interpretation of the clusters.
+
+### Answer: ### 

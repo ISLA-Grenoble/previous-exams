@@ -1,0 +1,22 @@
+---
+title: "Part 1: Multiple regression"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+
+### Question 1
+
+### Question 2
+
+### Question 3
+
+### Question 4
+
+### Question 5
+
+### Question 6
+
+### Question 7

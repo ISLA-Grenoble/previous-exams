@@ -1,0 +1,106 @@
+---
+title: "Exercise 2"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+The purpose of this study is to assess the recovery of patients who have recently suffered a stroke. 
+
+Twenty subjects were selected from two large public hospitals in Brisbane, Australia. All subjects have recently suffered a cerebrovascular accident resulting in hemiplegia lasting at least 24 hours, had not previously been incapacitated from stroke or other disease and were currently receiving occupational therapy.
+
+The assessment is divided into six components measuring motor function and balance, some sensation qualities, passive range of motion and occurrence of joint pain. 
+
+Variable | Description  
+---------|------------------------------------------  
+Subject	|	Subject ID (1-20)
+Arms		| Arm and shoulder motor function (max 36)
+Legs		| Lower limb motor function (max 30)
+Balance	|	Balance score (max 14)
+Sensation	|	Sensation score (max 24)
+JointPain	|	Freedom from joint pain (max 24)
+JointMotion	|	Passive joint motion (max 24)
+
+The data set is loaded by
+```{r}
+stroke = read.table("strokeass.txt", header=TRUE, row.names=1)
+stroke = stroke[,-c(1,2,3,4,7,12,13,14)]
+```
+
+## Question 1: ##
+A principal component analysis (PCA) is achieved by
+```{r}
+stroke.pca = prcomp(stroke, scale=TRUE)
+```
+
+Write a text with 60 to 80 words explaining the principle of PCA.
+
+### Answer: ###
+
+## Question 2: ##
+* Why did we use the option ```scale=TRUE```?
+* What could happen if we set that option to ```FALSE```? Is it desirable?
+
+### Answer: ###
+
+## Question 3: ##
+```{r}
+summary(stroke.pca)
+```
+
+* What do the three lines above mean or represent?
+* What to deduce from the output of this command concerning the number of axes to be kept in the analysis?
+
+### Answer: ###
+
+## Question 4: ##
+
+```{r}
+a <- (-100:100)/100
+y <- sqrt(1-a^2)
+P <- stroke.pca$rotation
+lambda <- stroke.pca$sdev^2
+for(i in 1:(dim(P)[2])) P[,i] <- P[,i] * sqrt(lambda[i])
+```
+
+```{r, fig.height=6, fig.width=12}
+par(mfcol=c(1,2))
+for (j in 2:3) {
+  plot(P[,1],P[,j], xlab="Axis 1", ylab = paste("Axis ", j), xlim=c(-1,1), ylim=c(-1,1))
+  abline(h=0, v=0); lines(a, y); lines(a, -y)
+  text(P[, 1], P[,j], names(stroke))
+  lines(a, y)
+  lines(a, -y)}
+```
+
+Provide some detailed comment on the above figures (your text must contain from 110 to 130 words).
+
+### Answer: ###
+
+## Question 5: ##
+
+Provide and execute some ```R``` code to represent the 20 individuals in the first principal plane (the figure should contain 20 points).
+
+### Answer: ###
+
+
+## Question 6: ##
+
+Roughly speaking, what are the main features (in terms of arm, shoulder and lower limb motor functions, balance and sensation scores, joint pain and motion) of the individuals placed in the 
+
+* Upper-left quadrant?
+* Upper-right quadrant?
+* Lower-left quadrant?
+* Lower-right quadrant?
+
+Justify your answer carefully.
+
+### Answer: ###
+
+
+## Question 7: ##
+
+Among the six features you mentioned in question 6, which one are you the least confident in, regarding your answer to that question? Why?
+
+### Answer: ###

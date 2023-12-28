@@ -1,0 +1,75 @@
+---
+title: "Exercise 2"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+Let us consider 40 kinds of beers, each one being characterized by the four
+following variables:  
+
+Variable | Meaning  
+---------|------------------------------------------  
+Taste    | Quantitative appreciation of taste given by experts  
+Bitter   | High values correspond to bitter beers, low values to sweet beers  
+Thirst   | High values correspond to thirst-quenching beers, low values to beers that leave consumers still thirsty  
+DgAlcohol | Degree of alcohol  
+
+The aim of the study is to use principal component analysis (PCA) to 
+obtain a summary of the data and visualize it.
+
+## Question 1: ##
+The result of PCA is loaded by
+```{r}
+load("beers.pca")
+```
+Provide and execute ```R``` code to plot individuals in the first principal plane.  
+
+### Answer: ###
+
+## Question 2: ##
+
+Provide and execute ```R``` code to perform PCA on variables.  
+Plot variables in the first principal plane. 
+Three groups of variables clearly appear in this figure.  
+What can be said about correlations:    
+
+* Between variables belonging to different groups?
+* Between variables belonging to the same group?
+
+### Answer: ###
+
+## Question 3: ##
+
+In PCA computations, was the ```scale``` argument set to ```FALSE``` or ```TRUE```?  
+How can you tell?  
+For which purpose was ```scale``` set to that value?
+
+### Answer: ###
+
+## Question 4: ##
+
+Do you assess that two principal components are sufficient to represent the features of the beers?   
+Why?  
+If not, how many principal components would be needed?  
+
+### Answer: ###
+
+## Question 5: ##
+
+Now return to the figure provided in question 1.  
+For each of the four quadrants (upper-left, upper-right, 
+and so on): what properties are shared by the beers within this quadrant?  
+On average, drinking more than 50cl beer results into 
+the legal inability to drive a car. You wish to drink 50cl beer and
+quench your thirst, but you wish also to minimise the risk of having
+a fee for exceeding the legal rate of alcohol while driving your car.
+Which beer should you avoid in this case? (give detailed justification).  
+Which beer would you choose if you wanted to avoid bitterness?  
+What potential drawback of this beer should you expect
+(give detailed justification)?  
+Which beer would you choose if you would like to avoid both bitterness 
+and bad taste (give detailed justification)?  
+
+### Answer: ###

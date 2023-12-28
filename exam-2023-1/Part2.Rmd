@@ -1,0 +1,21 @@
+---
+title: "Part2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question (a)
+The $t$-test for statistical significance of all predictors have yielded $p$-values always larger than 0.05. As such, we can't conclude anything regarding the significance of any of them individually. To make these conclusions, we can use the 4th column of the `summary` output.
+
+### Question (b)
+The standard error for the `carb` parameter is 0.82875 with an estimate of -0.19942. The confidence interval is then
+$$
+\hat{\beta}_{\texttt{carb}} \in -0.19942 \pm \dfrac{1.96}{\sqrt{32}}\times 0.82875 \in [-0.4865672, 0.08772723]
+$$
+Since zero is inside the confidence interval, we can't say the the estimated coefficient is statistically significantly different than zero.
+
+### Question (c)
+The $p$-value indicated in the last line of the `summary` refers to the result of the $F$-test applied to the full model. From this value, we can conclude that there exists statistical evidence that the predictors chosen to model `mpg` are relevant (i.e. using them in the linear regression is better than just using the intercept). At first, this may seem contradictory with what we obtained in (a), since none of the predictors had a $p$-value smaller than the threshold value for statistical significance. However, this kind of situation can happen in practice whenever there is strong correlation between the predictors, i.e. we observe multicollinearity. 

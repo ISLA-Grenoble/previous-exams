@@ -1,0 +1,137 @@
+---
+title: "Graphs"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 100)
+```
+
+# Comparison of diverse graph clustering algorithms.
+
+```{r, message=FALSE}
+library(igraph)
+dat <- read.table("graph_ex1.txt", header = FALSE, sep = " ")
+mis_graph <- simplify(graph.data.frame(dat, directed=FALSE))
+```
+
+* Size and order of the graph
+
+```{r, message=FALSE}
+size = ecount(mis_graph)
+order = vcount(mis_graph)
+c(size, order)
+```
+
+* Density and diameter of the graph
+
+```{r, message=FALSE}
+diam = diameter(mis_graph)
+diam 
+```
+
+* Mean distance
+
+```{r, message=FALSE}
+md = mean_distance(mis_graph, directed = FALSE)
+md
+```
+
+* Plot the graph
+```{r, fig.height = 10, fig.width = 10}
+set.seed(3)
+V(mis_graph)$label.cex <- (degree(mis_graph)+10)/max(degree(mis_graph)) * 1.5
+l <- layout.fruchterman.reingold(mis_graph)
+plot(mis_graph, vertex.size = 0, layout = l)
+```
+
+## Edge betweenness##
+
+
+```{r, fig.height = 10, fig.width = 10} 
+set.seed(3)
+# Edge betweenness 
+eb <- cluster_edge_betweenness(mis_graph, directed=F)
+dendPlot(eb, mode="hclust")
+```
+
+### Clustering ###
+
+## Hierarchical cluster analysis (Jaccard similarity)
+
+```{r, fig.height=10, fig.width=10, message=FALSE}
+d <- 1-similarity(mis_graph, method = 'jaccard')
+d <- as.dist(d)
+res <- hclust(d, method="complete")
+# Plot the dendrogram
+plot(res, labels=V(mis_graph)$name, hang=-1, cex=0.8)
+``` 
+
+```{r, fig.height = 10, fig.width = 10}
+lab_hclust = cutree(res, 3) # associated clustering (e.g. 3 clusters)
+plot(mis_graph, layout = l, vertex.size = 5, vertex.color = lab_hclust)
+```
+
+## Edge betweenness
+
+```{r, fig.height = 10, fig.width = 10} 
+# Edge betweenness 
+plot(mis_graph, layout = l, vertex.size = 5, vertex.color = eb$membership)
+```
+
+## Louvain algorithm ##
+
+```{r, fig.height = 10, fig.width = 10}
+# Louvain 
+louv <- cluster_louvain(mis_graph)
+plot(mis_graph, layout = l, vertex.size = 5, vertex.color = louv$membership)
+```
+## Spectral clustering ##
+
+Degrees and indicence matrix
+Normalized graph Laplacian
+```{r, fig.height = 10, fig.width = 10}
+# library(network)
+# library(intergraph)
+D <- diag(degree(mis_graph))
+SD <- diag(degree(mis_graph)**(-0.5))
+A <- get.adjacency(mis_graph)
+L <- D - A
+SL <- SD%*%L%*%SD
+EL <- eigen(SL)
+VL <- EL$vectors
+VL <- data.frame(VL)
+row.names(VL) <- attributes(A)$Dimnames[[1]]
+i = 8
+j = 9
+plot(VL[,i], VL[,j], type="n", xlab=paste("Axis",i), ylab=paste("Axis",j))
+text(VL[,i], VL[,j], row.names(VL))
+```
+
+### Unnormalized graph Laplacian
+```{r, fig.height = 10, fig.width = 10}
+E <- eigen(L)
+V <- E$vectors
+V <- data.frame(V)
+row.names(V) <- attributes(A)$Dimnames[[1]]
+i = 8
+j = 9
+plot(V[,i], V[,j], type="n", xlab=paste("Axis",i), ylab=paste("Axis",j))
+text(V[,i], V[,j], row.names(V))
+```
+
+```{r}
+D
+A
+L
+```
+
+### Using clustering_leading_eigen in igraphs
+```{r, fig.height = 10, fig.width = 10}
+# SC
+sc = cluster_leading_eigen(mis_graph)
+V(mis_graph)$color = sc$membership
+
+plot.igraph(mis_graph, vertex.size = 5, vertex.label=V(mis_graph)$name, layout=l, edge.color="black", edge.width=E(mis_graph)$weight/5000)
+
+```

@@ -1,0 +1,22 @@
+---
+title: "Part 2: Classification"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+
+### Question 1
+#### (a)
+
+#### (b)
+
+#### (c)
+
+#### (d)
+
+### Question 2
+#### (a)
+
+#### (b)

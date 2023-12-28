@@ -1,0 +1,63 @@
+---
+title: "Exercise 1"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(width = 200)
+```
+Let consider the following R script:
+```{r}
+set.seed(0)
+# Number of variables
+pt = 201
+# Number of predictors
+p = pt - 1
+# Sample size
+n = 30 * p
+D = matrix(rnorm(n*pt), nrow=n, ncol=pt)
+D = data.frame(D)
+names(D)[pt] = "Y"
+reg = lm(Y~., data=D)
+```
+## Question 1: ##
+* What does the script above do?
+* What is the true distribution for the random variable $Y$ given the first 200 columns of ```D```: $X_1, \ldots, X_200$ (referred to as “variables”). Give the name and parameters of this distribution.
+
+### Answer: ###
+
+## Question 2: ##
+* Write an equation defining model estimated by the ```lm``` command in line 21. What is the difference between this model and the one defined in question 1?
+* Hint: write equations using 
+<pre><code>
+$$
+(a+b)^n = \sum\limits_{k=0}^n \frac{n!}{k! (n-k)!} a^k b^{n-k}.
+$$
+</code></pre>
+
+### Answer: ###
+
+## Question 3: ##
+Provide and execute some ```R``` code to compute the number of coefficient assessed as significantly non-zero at level 5%.
+
+Hint: ```summary(reg)$coefficients```
+
+### Answer: ###
+
+## Question 4: ##
+Provide an explanation for the result obtained in question 3.
+
+### Answer: ###
+
+## Question 5: ##
+What issue is raised by the result obtained in question 3?
+
+### Answer: ###
+
+## Question 6: ##
+Describe a possible solution to solve this problem, explaining why you think it should work (with full details and defining the concepts you introduce: 10 lines expected, assuming approx. 85 characters / line in your editor).
+
+Implement that solution and comment the results.
+
+### Answer: ###
+

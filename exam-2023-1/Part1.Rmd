@@ -1,0 +1,28 @@
+---
+title: "Part1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Write the letter of your response to each multiple choice question.
+
+### Question 1
+(B)
+
+### Question 2
+(B)
+
+### Question 3
+(C)
+
+### Question 4
+(B)
+
+### Question 5
+(D)
+
+### Question 6
+(C)
