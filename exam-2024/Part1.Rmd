@@ -1,0 +1,26 @@
+---
+title: "Part1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question 1
+Write either "True" or "False" for each sentence
+(a)
+(b)
+(c)
+(d)
+(e)
+(f)
+(g)
+(h)
+
+### Question 2
+Write which letter you think is the correct option
+
+### Question 3
+Write which letter you think is the correct option
+

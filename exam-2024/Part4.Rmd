@@ -1,0 +1,18 @@
+---
+title: "Part4"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Question (a)
+
+### Question (b)
+
+### Question (c)
+
+### Question (d)
+
+### Question (e)
