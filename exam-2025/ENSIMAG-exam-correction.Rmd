@@ -1,0 +1,465 @@
+---
+# title: "Template Work/labsheet"
+# author: "Christophe Dutang, Pedro Rodrigues"
+documentclass: article
+papersize: a4
+geometry: top=1.5cm, bottom=2cm, left=1.5cm, right=1.5cm
+fontsize: 11pt
+output: 
+  pdf_document:
+    extra_dependencies: ["enumitem"]
+    number_sections: true
+    toc: false
+    keep_tex: false
+    includes:
+      in_header: "ENSIMAG-exam-preamble.tex"
+      before_body: "ENSIMAG-exam-header.tex"
+      
+---
+
+<!-- see help at https://bookdown.org/yihui/rmarkdown-cookbook/latex-output.html -->
+
+```{r setup, include=FALSE, message=FALSE}
+#see full list >knitr::opts_chunk$get()
+knitr::opts_chunk$set(echo = TRUE, fig.align="center")
+library(reticulate)
+use_python("/opt/homebrew/Caskroom/miniforge/base/envs/isla2025/bin/python", required = T)
+```
+
+This exam is composed of four parts.
+
+The maximum final grade is 20.0 points.
+
+Be sure to **read through all of the questions** before starting to solve the exam. 
+
+All handwritten documents are allowed, as well as the electronic documents on your computer. No calculator or mobile phone allowed.
+
+No internet connection is available from your computer, except to the following webpage :
+
+\begin{itemize}
+\item The \texttt{sklearn} documentation at : https://scikit-learn.org/stable/
+\end{itemize}
+
+This practical exam will be entirely done using Jupyter notebooks. Open each `ipynb` file located in the `$HOME/exam/` directory. Answer the questions directly in each file. The different `ipynb` files correspond to each of the parts of the exam.
+
+Any answer not contained in the `ipynb` files will not be taken into account, unless explicitly mentioned by you in the `ipynb` file (for example you can state: please see figure `myfig.png`).
+
+The contents of the `$HOME/exam/` directory are
+
+- `exam.pdf` (this document)
+- `Part1.ipynb`, `Part2.ipynb`, `Part3.ipynb`, `Part4.ipynb` (the files you have to complete and save) 
+- `/references/article-newman.pdf` (the PDF of the article useful in Part 4)
+- `/references/slides/` (the PDFs of the slides of all classes)
+- `/datasets` (the \code{csv} files to be used during the exam)
+
+\importantbox{You should regularly \textbf{save the current state} of your whole home directory using the icons on your desktop. To do that:
+(1) Save the files currently open in your editor then (2) Save your current work and continue the exam.
+\textbf{Before leaving the room} save your current work and stop the session. Please note that the backup operation is based on \texttt{rsync}, and does not store every intermediate saved version (in this order!). If your PC crashes, your latest backup can be recovered with the help of the teaching staff.}
+
+Good luck!
+
+\newpage
+\section*{$\blacktriangleright$~Part 1: Multiple choice questions (0.5 point per question, 6 points in total)}
+For each question, write the letter in your `Part1.ipynb` file corresponding to the correct answer. 
+
+Each question has **exactly one correct** answer.
+
+\subsection*{\small--~Question 1}
+Given $d$-dimensional data $\mathbf{x}_{i = 1}^N$, you run principle component analysis and pick $P$ principle components. Can you always reconstruct any data point $\mathbf{x}_i$ for $i \in \{1 ... N\}$ from the $d$ principle components with zero reconstruction error?
+\begin{itemize}
+\item[(A)] Yes, if $P < d$.
+\item[(B)] Yes, if $P = d$.
+\item[(C)] Yes, if $P < N$.
+\item[(D)] No, always.
+\end{itemize}
+
+\subsection*{\small--~Question 2}
+Which of the following transformations to a data matrix $\mathbf{X}$ will affect the principal components obtained through PCA?
+\begin{itemize}
+ \renewcommand{\labelitemi}{\scriptsize$\square$}
+\item[(A)] Adding a constant value to all elements of $\mathbf{X}$.
+\item[(B)] Multiplying one of the features of $\mathbf{X}$ by a constant.
+\item[(C)] Adding an extra feature to $\mathbf{X}$ (i.e. an extra column) that is constant across all data points.
+\item[(D)] None of the above answers.
+\end{itemize}
+
+\subsection*{\small--~Question 3}
+In linear regression, we model $p(y \mid \mathbf{x}) \sim \mathcal{N}(\beta^\top \mathbf{x} + \beta_0, \sigma^2)$. The irreducible error in this model is
+\begin{itemize}
+\item[(A)] $\sigma^2$
+\item[(B)] $\mathbb{E}[y \mid \mathbf{x}]$
+\item[(C)] $\mathbb{E}[(y - \mathbb{E}[y \mid \mathbf{x}])^2 \mid \mathbf{x}]$
+\item[(D)] None of the above.
+\end{itemize}
+
+\subsection*{\small--~Question 4}
+The decision boundaries of a logistic regression model:
+\begin{itemize}
+\item[(A)] split classes using only one of the input features
+\item[(B)] split classes using a combination of the input features
+\item[(C)] often have curved shapes
+\item[(D)] None of the above
+\end{itemize}
+
+\subsection*{\small--~Question 5}
+How does the bias-variance decomposition of a ridge regression estimator compare with that of ordinary
+least squares regression?
+\begin{itemize}
+\item[(A)] Ridge has larger bias, larger variance.
+\item[(B)] Ridge has larger bias, smaller variance.
+\item[(C)] Ridge has smaller bias, larger variance.
+\item[(D)] Ridge has smaller bias, smaller variance.
+\end{itemize}
+
+\subsection*{\small--~Question 6}
+Suppose you want to split a graph $G$ into two subgraphs. Let $L$ be $G$’s Laplacian matrix. Which of the following could help you find a good split?
+\begin{itemize}
+\item[(A)] The eigenvector corresponding to the second-largest eigenvalue of $L$
+\item[(B)] The eigenvector corresponding to the second-smallest eigenvalue of $L$
+\item[(C)] The left singular vector corresponding to the second-largest singular value of $L$
+\item[(D)] None of the above
+\end{itemize}
+
+\subsection*{\small--~Question 7}
+We define a 2-dimensional dataset represented graphically as in the left part of the figure below. If we process the dataset using a `StandardScaler` from `sklearn` with its default parameters, which of the results presented in the right part of the figure do you expect:
+```{python, echo=FALSE, results='hide'}
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+
+N = 100
+x1 = 4 + np.random.randn(N)
+x2 = 12 * (np.random.rand(N) - 0.5)
+X = np.c_[x1, x2]
+
+fig = plt.figure(figsize=(13.0, 5.9))
+
+ax1 = plt.subplot2grid((2, 4), (0, 0), rowspan=2, colspan=2)
+ax1.scatter(X[:, 0], X[:, 1], c='C0', s=30)
+ax1.set_xlabel('Feature X1')
+ax1.set_ylabel('Feature X2')
+ax1.set_title('Initial dataset')
+ax1.set_aspect('equal')
+ax1.set_xticks(np.arange(-6, 7, 2))
+ax1.set_xticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax1.set_yticks(np.arange(-6, 7, 2))
+ax1.set_yticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax1.set_xticks(np.arange(-6, 7, 2), minor=True)
+ax1.set_yticks(np.arange(-6, 7, 2), minor=True)
+ax1.set_xlim(-6, +6)
+ax1.set_ylim(-6, +6)
+ax1.grid(True)
+
+ax2 = plt.subplot2grid((2, 4), (0, 2), rowspan=1, colspan=1)
+scaler = StandardScaler()
+X_A = scaler.fit_transform(X)
+ax2.scatter(X_A[:, 0], X_A[:, 1], c='C0', s=10)
+ax2.set_title('Preprocessing A')
+ax2.set_aspect('equal')
+ax2.set_xticks(np.arange(-6, 7, 2))
+ax2.set_xticklabels([])
+ax2.set_yticks(np.arange(-6, 7, 2))
+ax2.set_yticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax2.set_xticks(np.arange(-6, 7, 2), minor=True)
+ax2.set_yticks(np.arange(-6, 7, 2), minor=True)
+ax2.set_xlim(-6, +6)
+ax2.set_ylim(-6, +6)
+ax2.grid(True)
+
+ax3 = plt.subplot2grid((2, 4), (0, 3), rowspan=1, colspan=1)
+X_B = X - X.mean(axis=0)
+ax3.scatter(X_B[:, 0], X_B[:, 1], c='C0', s=10)
+ax3.set_title('Preprocessing B')
+ax3.set_aspect('equal')
+ax3.set_xticks(np.arange(-6, 7, 2))
+ax3.set_xticklabels([])
+ax3.set_yticks(np.arange(-6, 7, 2))
+ax3.set_yticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax3.set_xticks(np.arange(-6, 7, 2), minor=True)
+ax3.set_yticks(np.arange(-6, 7, 2), minor=True)
+ax3.set_xlim(-6, +6)
+ax3.set_ylim(-6, +6)
+ax3.grid(True)
+
+ax4 = plt.subplot2grid((2, 4), (1, 2), rowspan=1, colspan=1)
+scaler = StandardScaler()
+X_C = scaler.fit_transform(X)
+X_C = X_C + scaler.mean_
+ax4.scatter(X_C[:, 0], X_C[:, 1], c='C0', s=10)
+ax4.set_title('Preprocessing C')
+ax4.set_aspect('equal')
+ax4.set_xticks(np.arange(-6, 7, 2))
+ax4.set_xticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax4.set_yticks(np.arange(-6, 7, 2))
+ax4.set_yticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax4.set_xticks(np.arange(-6, 7, 2), minor=True)
+ax4.set_yticks(np.arange(-6, 7, 2), minor=True)
+ax4.set_xlim(-6, +6)
+ax4.set_ylim(-6, +6)
+ax4.grid(True)
+
+ax5 = plt.subplot2grid((2, 4), (1, 3), rowspan=1, colspan=1)
+scaler = StandardScaler()
+X_D = scaler.fit_transform(X)
+X_D = X_D * 0.5 + 1.0
+ax5.scatter(X_D[:, 0], X_D[:, 1], c='C0', s=10)
+ax5.set_title('Preprocessing D')
+ax5.set_aspect('equal')
+ax5.set_xticks(np.arange(-6, 7, 2))
+ax5.set_xticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax5.set_yticks(np.arange(-6, 7, 2))
+ax5.set_yticklabels(np.arange(-6, 7, 2), fontsize=12)
+ax5.set_xticks(np.arange(-6, 7, 2), minor=True)
+ax5.set_yticks(np.arange(-6, 7, 2), minor=True)
+ax5.set_xlim(-6, +6)
+ax5.set_ylim(-6, +6)
+ax5.grid(True)
+
+fig.show()
+```
+\begin{itemize}
+\item[(A)] Preprocessing A
+\item[(B)] Preprocessing B
+\item[(C)] Preprocessing C
+\item[(D)] Preprocessing D
+\end{itemize}
+
+\subsection*{\small--~Question 8}
+Why does random forests select a random subset of predictors when building each of its decision trees?
+\begin{itemize}
+\item[(A)] To facilitate the cross-validation procedure afterwards
+\item[(B)] To reduce bias of the final ensemble estimator
+\item[(C)] To maximize the entropy of the decision trees
+\item[(D)] To reduce the correlation between the decision trees in the ensemble
+\end{itemize}
+
+\subsection*{\small--~Question 9}
+Which of the following statements is true about nearest neighbor classifiers
+\begin{itemize}
+\item[(A)] Nearest neighbors can be slow to find in high-dimensional spaces
+\item[(B)] Nearest neighbor classifiers can only work with the Euclidean distance
+\item[(C)] Nearest neighbor classifiers do not need to store the training data
+\item[(D)] None of the above
+\end{itemize}
+
+\subsection*{\small--~Question 10}
+Suppose you have data with lots of outliers. Everything else being equal, and assuming that you do not do any pre-processing, what cost function will be less eﬀected by these outliers?
+\begin{itemize}
+\item[(A)] $(y - f(x))^2$
+\item[(B)] $|y - f(x)|$
+\item[(C)] $1/y * (y - f(x))^2$
+\item[(D)] $(\log(y) - f(x))^2$
+\end{itemize}
+
+\subsection*{\small--~Question 11}
+The figure below shows three different datasets (A, B, C) and the predictions of the same linear model (in orange) used to predict each of these datasets. 
+
+```{python, echo=FALSE, results='hide'}
+import matplotlib.pyplot as plt
+import numpy as np
+
+XA = [1, 2, 2, 4, 5, 6, 7, 8]
+YA = [1, 2, 5, 4, 5, 6, 7, 8]
+
+XB = [1, 2, 3, 5, 5, 5, 7, 8]
+YB = [1, 2, 3, 3, 5, 7, 7, 8]
+
+XC = [1, 2, 3, 4, 5, 6, 7, 8]
+YC = [1, 3, 4, 5, 6, 5, 7, 8]
+
+fig, ax = plt.subplots(1, 3, figsize=(13, 4))
+ax[0].scatter(XA, YA, s=50, color='C0')
+ax[1].scatter(XB, YB, s=50, color='C0')
+ax[2].scatter(XC, YC, s=50, color='C0')
+title = ['A', 'B', 'C']
+for i, axi in enumerate(ax):
+    axi.grid(True)
+    axi.plot([1, 8], [1, 8], color='C1', linestyle='--')
+    axi.set_xticks(np.arange(1, 9, 1))
+    axi.set_yticks(np.arange(1, 9, 1))
+    axi.set_xlabel('x (input)')
+    axi.set_ylabel('y (output)')
+    axi.set_title(title[i])
+fig.show()
+```
+
+Choose the correct ordering with respect to the MSE (Mean Squared Error) loss on each dataset
+\begin{itemize}
+\item[(A)] $\text{MSE}_B > \text{MSE}_A > \text{MSE}_C$
+\item[(B)] $\text{MSE}_B > \text{MSE}_C > \text{MSE}_A$
+\item[(C)] At least two of the MSE losses are equal
+\item[(D)] $\text{MSE}_A > \text{MSE}_B > \text{MSE}_C$
+\end{itemize}
+
+\subsection*{\small--~Question 12}
+Considering the same figure from the previous question, choose the correct ordering with respect to the MAE (Mean Absolute Error) loss on each dataset
+\begin{itemize}
+\item[(A)] $\text{MAE}_A > \text{MAE}_C > \text{MAE}_B$
+\item[(B)] $\text{MAE}_C > \text{MAE}_B > \text{MAE}_A$
+\item[(C)] At least two of MAE losses are equal
+\item[(D)] $\text{MAE}_B > \text{MAE}_C > \text{MAE}_A$
+\end{itemize}
+
+\newpage
+\section*{$\blacktriangleright$~Part 2: Multiple linear regression (5.0 points)}
+In this exercise, you will perform multiple linear regression on simulated data under different conditions. To ensure reproducibility on your results, set the seed with \code{numpy.random.seed(0)} at the beginning of your script. 
+
+\begin{enumerate}
+\item[(a)] Simulate a dataset of size $N = 1000$ of the following generating model:
+\begin{equation*}
+\begin{array}{rcl}
+X_{1,i} &=& \varepsilon_{1,i} \\[0.25em]
+X_{2,i} &=& 4X_{1,i} + \varepsilon_{2,i} \\[0.25em]
+Y_{i} &=& X_{2,i} + X_{1,i} - 5 + \varepsilon_{3,i}
+\end{array}
+\end{equation*}
+where $i \in \{1,\dots, N\}$ and the $\varepsilon_{ij}$ are independent $\mathcal{N}(0,1)$ random variables. For a given $i$, what is the distribution of $(X_{1,i}, X_{2,i})$? Plot the clouds of points of the simulated values of $(X_{1,i}, X_{2,i})_{i=1, \dots, n}$. What is its shape? Can you write an analytical formula for it? \textbf{(2.0 points)}
+
+\item[(b)] Let us consider the following two regression models:
+\begin{equation*}
+\begin{array}{rrcl}
+\text{Model A:} & Y_i & = & \alpha_1 X_{1,i} + \alpha_0 + \tilde{\varepsilon}_{A,i} \\[0.5em]
+\text{Model B:} & Y_i & = & \beta_2 X_{2,i} + \beta_0 + \tilde{\varepsilon}_{B,i}
+\end{array}
+\end{equation*}
+where $\tilde{\varepsilon}_{A,i} \sim \mathcal{N}(0, \sigma_A^2)$ and $\tilde{\varepsilon}_{B,i} \sim \mathcal{N}(0, \sigma_B^2)$. What should be the values of $\hat{\alpha}_0, \hat{\alpha}_1, \hat{\sigma}_A^2, \hat{\beta}_0, \hat{\beta}_2, \hat{\sigma}_B^2$ when $N \to \infty$? Consider $N = 1000$ and check whether the estimates of the parameters are close to the true values that you've calculated. You can do your estimation any way you want, e.g. using the analytical formula for regression, functions from \code{sklearn}, functions from \code{statsmodels}, etc. Now do \code{np.random.seed(3)} and simulate again a dataset $X_{1,i}, X_{2,i}, Y_i$ for $n = 10$. Estimate the parameters. What happens? \textbf{(2.0 points)}
+
+\item[(c)] Let us now consider the full model
+$$
+Y_i = \gamma_2 X_{2, i} + \gamma_1 X_{1, i} + \gamma_0 + \varepsilon_i
+$$
+where $i \in \{1,\dots, n\}$ and the $\varepsilon_i$ are independent $\mathcal{N}(0, \sigma^2)$ random variables. For the previously simulated data with $n = 10$, estimate $\hat{\gamma}_0, \hat{\gamma}_1, \hat{\gamma}_2, \hat{\sigma}^2$ and compare them with the parameters obtained in item (b). What can you say about the effects of $X_1$ and $X_2$ on $Y$? And about their correlation? \textbf{(1.0 points)}
+\end{enumerate}
+
+\newpage
+\section*{$\blacktriangleright$~Part 3: Adaboost (5.0 points)}
+Recall that the AdaBoost algorithm goes as follows: 
+\begin{itemize}
+\item[] Given: $(\mathbf{x}_1, y_1), \dots, (\mathbf{x}_m, y_m)$ where $\mathbf{x}_i \in \mathbb{R}^d$ and $y_i \in \{-1, +1\}$
+\item[] Initialize: $D_1(i) = 1/m$ for $i = 1, \dots, m$
+\item[] For $t = 1, \dots, T$:
+\item Train a weak learner $h_t$ to minimize the weighted training error:
+\begin{equation}
+\varepsilon_t = \dfrac{1}{m}\sum_{i = 1}^m D_t(i) \mathbf{1}\Big(h_t(\mathbf{x}_i) \neq y_i\Big)
+\end{equation}
+\item Choose the step-size:
+\begin{equation}
+\alpha_t = \dfrac{1}{2}\log\left(\dfrac{1-\varepsilon_t}{\varepsilon_t}\right)
+\end{equation}
+\item Update, for $i = 1, \dots, m$:
+\begin{equation}
+D_{t+1}(i) = \dfrac{D_t(i)}{Z_t} \times \left\{\begin{array}{lc}
+e^{-\alpha_t} & \text{if}~h_t(\mathbf{x}_i) = y_i \\
+e^{+\alpha_t} & \text{if}~h_t(\mathbf{x}_i) \neq y_i
+\end{array}\right. = \dfrac{D_t(i)\exp(-\alpha_t y_i h_t(\mathbf{x}_i))}{Z_t}
+\end{equation}
+where $Z_t$ is a normalization factor chosen so that $D_{t+1}$ is a probability distribution.
+\item[] Output the final hypothesis as:
+\begin{equation}
+H(\mathbf{x}) = \text{sign}\left(\sum_{t = 1}^T \alpha_t h_t(\mathbf{x})\right)
+\end{equation}
+\end{itemize}
+
+The graphs below show three iterations of Adaboost using a depth 1 decision tree (i.e. a decision stump) on a given dataset. Each dashed line represents the decision boundary of $h_t$ at iteration $t \in \{1, 2, 3\}$, and the shaded regions represent the predictions, positive (+1, blue) or negative (-1, red). 
+
+```{python, echo=FALSE, results='hide'}
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import AdaBoostClassifier
+
+df = pd.read_csv('./datasets/dataset_ex3.csv')
+X = df[['x1', 'x2']].values
+y = df['label']
+y = np.where(y == 'plus', 1, 0)  # Convert labels to binary
+idx = np.random.permutation(len(X))
+X = X[idx]
+y = y[idx]
+y = 2 * y - 1
+
+clfs = []
+weights = np.ones((4, len(X))) / len(X)
+for i in range(3):
+
+    clf_i = DecisionTreeClassifier(max_depth=1)
+    clf_i.fit(X, y, sample_weight=weights[i, :])
+    clfs.append(clf_i)
+
+    pred_i = clf_i.predict(X)
+    err_i = np.sum(weights[i, :] * (pred_i != y)) / np.sum(weights[i, :])
+    alpha_i = 0.5 * np.log((1 - err_i) / err_i)
+    weights[i + 1, :] = weights[i, :] * np.exp(-alpha_i * y * pred_i)
+    weights[i + 1, :] /= np.sum(weights[i + 1, :])
+
+est = AdaBoostClassifier(
+    estimator=DecisionTreeClassifier(max_depth=1),
+    n_estimators=3)
+est.fit(X, y)
+
+# Plotting
+fig, ax = plt.subplots(ncols=3, figsize=(14.4 ,  4.22))
+
+# Plot data points
+for i, axi in enumerate(ax):
+    axi.scatter(X[y == 1, 0], X[y == 1, 1], marker='+', s=200, color='blue', linewidths=2)
+    axi.scatter(X[y == -1, 0], X[y == -1, 1], marker='_', s=200, color='red', linewidths=4)
+
+    thr = est.estimators_[i].tree_.threshold[0]
+    feat = est.estimators_[i].tree_.feature[0]
+    if feat == 0:
+        axi.axvline(thr, color='black', linestyle='--')
+    else:
+        axi.axhline(thr, color='black', linestyle='--')
+
+    if feat == 0:
+        axi.axvspan(0.0, thr, facecolor='lightblue', alpha=0.25)
+        axi.axvspan(thr, 1.0, facecolor='lightcoral', alpha=0.25)
+    else:
+        axi.axhspan(0.0, thr, facecolor='lightcoral', alpha=0.25)
+        axi.axhspan(thr, 1.0, facecolor='lightblue', alpha=0.25)
+
+    axi.set_xlim(0, 1)
+    axi.set_ylim(0, 1)
+    axi.set_title(f'Iteration {i + 1}')
+
+    axi.set_xlabel('x1')
+    axi.set_ylabel('x2')
+
+fig.show()
+```
+
+\begin{itemize}
+\item[(a)] For each iteration in the figure above, find the weighted training error $\varepsilon_t$ and importance $\alpha_t$ of $h_t$ according to the Adaboost algorithm described above. For $t = 1$ and $t = 2$ find the weight normalization $Z_t$ and record the updated weight for each point. \textbf{(1.0 point)}
+\item[(b)] Load the \texttt{datasets/dataset\_ex3.csv} file into a dataframe (hint: \code{pandas.read\_csv} is your friend) and make a scatter plot of the data points using the same markers and colors as in the figure above (hint: you can use option \texttt{marker='+'} and \texttt{marker='-'} in the \texttt{ax.scatter} function from \texttt{matplotlib}). \textbf{(1.0 point)}
+\item[(c)] With the help of the \texttt{DecisionTreeClassifier} class from \texttt{sklearn}, fit a decision stump $h_1$ on the dataset corresponding to the first iteration of Adaboost. Remember to set an uniform weight $w_1$ over all data points in this first iteration and to ensure that the labels $y_i \in \{-1, +1\}$. Show that your predictions match those from the first iteration in the figure above. \textbf{(1.0 point)}
+\item[(d)] Calculate the new weights $w_2$ of the data points based on predictions from iteration $t = 1$. Use them to fit a new decision stump $h_2$ on the weighted dataset (hint: every estimator in \texttt{sklearn} comes with an optional argument \texttt{sample\_weight}  in its \texttt{fit} method that can enforce weights on the loss function). Show that your predictions match those from the second iteration in the figure above. \textbf{(0.5 point)}
+\item[(e)] Calculate the new weights $w_3$ of the data points based on predictions from iteration $t = 2$. Use them to fit a new decision stump $h_3$ on the weighted dataset. Show that your predictions match those from the third iteration in the figure above. (\textbf{0.5 point})
+\item[(f)] Calculate the training error of the final ensemble classifier, i.e. the classifier that for each datapoint $\mathbf{x}$ outputs predictions $h(\mathbf{x}) = \text{sign}(\alpha_1 h_1(\mathbf{x}) + \alpha_2 h_2(\mathbf{x}) + \alpha_3 h_3(\mathbf{x}))$ \textbf{(1.0 point)}
+\end{itemize}
+
+\newpage
+\section*{$\blacktriangleright$~Part 4: Community detection (4.0 points)}
+We will consider a famous example of a social network from the network science literature called Wayne Zachary's ``karate club" network. This network represents the pattern of friendships between members of a karate club at a US university, as determined by direct observation of the club's members over an extended period. This network is interesting because during the period of observation a dispute arose among the members of the club over whether to raise the club's fees and as a result the club eventually split into two equal parts with 17 members, the second group departing to form their own club. It is the two factions in this split, as reported by Zachary, that will form the ground truth for us when applying different algorithms for community detection. The figure below portrays the nodes of the graph (starting at 1) with their corresponding factions as colors.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\columnwidth]{karate_plot.png}
+\end{figure}
+
+First of all, you will have to load two \code{csv} files as follows with the help of \code{numpy}:
+\begin{itemize}
+\item \code{A = np.loadtxt('datasets/karate\_adjacency.csv')} which gives the adjancecy matrix of the graph
+\item \code{F = np.loadtxt('datasets/karate\_factions.csv')} which tells us the ground truth factions
+\end{itemize}
+
+Note that some questions below can be easily answered if you've read the paper "Modularity and community structure in networks" (available to you at `/article-newman.pdf`)
+
+\begin{enumerate}
+\itemsep0em
+\item[(a)] Define in your own words the notion of modularity of a network and how it can be used to split a network into communities. Your description should include whether the modularity depends solely on the structure of the network or not. \textbf{(0.5 points)}
+\item[(b)] Using the equations seen in class, calculate the modularity matrix of the graph. \textbf{(0.5 points)}
+\item[(c)] Once again using equations seen in class, calculate the modularity of the graph $Q$ when fixing the classes of each node according to their ground truth factions as given in array \code{F}. (Hint: be sure to encode the factions with -1 and +1 as discussed in class) \textbf{(1.0 points)}
+\item[(d)] Based on the eigenvalue and eigenvector decomposition of the modularity matrix, split the graph into two communities. Interpret the magnitude of the coordinates of the leading eigenvector (i.e. the one related to the largest eigenvalue) and explain how it can be related to the ``faction ambiguity" of each vertex in the graph. Are there any nodes for which the split look more ambiguous than others? Relate your answer with the figure of the graph above \textbf{(1.5 points)}
+\item[(e)] What would happen if all the eigenvalues of the modularity matrix were smaller than zero? What would this indicate in terms of the structure of the network? \textbf{(0.5 points)}
+\end{enumerate}
