@@ -7,11 +7,8 @@ def parse_questions_md(md_path):
     with open(md_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    # Normalize line endings
     content = content.replace('\r\n', '\n')
     
-    # Split by headers like ## Part X or ## Exercise X
-    # Use a lookahead/lookbehind or just find all headers and split
     header_pattern = r'^##\s+(?:Part|Exercise)\s+(\d+)'
     headers = list(re.finditer(header_pattern, content, re.MULTILINE))
     
@@ -24,13 +21,10 @@ def parse_questions_md(md_path):
             part_content = content[start:end]
             
             # Extract questions
-            # We look for markers: **Q1.**, **(a)**, **Q1 — Title**, etc.
-            # We'll use a regex that looks for bold text at the start of a line or after some whitespace
             q_pattern = r'\n(\*\*(?:Q\d+|(?:\([a-z]\))|Q\d+\s+—).*?\*\*)'
             q_starts = list(re.finditer(q_pattern, part_content, re.DOTALL))
             
             if not q_starts:
-                # Try another pattern for (a), (b), (c)
                 q_pattern = r'\n(\*\*?\([a-z]\)\*\*?)'
                 q_starts = list(re.finditer(q_pattern, part_content))
             
@@ -45,61 +39,91 @@ def parse_questions_md(md_path):
             parts[part_num] = questions
     return parts
 
-def inject_into_notebook(nb_path, questions):
-    if not questions:
-        return
-        
+def inject_into_notebook(nb_path, parts_dict, target_part=None):
     with open(nb_path, 'r', encoding='utf-8') as f:
         nb = json.load(f)
     
     updated_cells = []
-    q_idx = 0
-    
-    # Keep track of which questions we've already injected to avoid duplicates
     injected_questions = set()
+    
+    # Pre-parse parts and their questions
+    all_questions = []
+    if target_part:
+        if target_part in parts_dict:
+            all_questions = [(target_part, q) for q in parts_dict[target_part]]
+    else:
+        for p in sorted(parts_dict.keys()):
+            all_questions.extend([(p, q) for q in parts_dict[p]])
+
+    q_idx = 0
+    current_nb_part = None
 
     for cell in nb['cells']:
         cell_text = "".join(cell['source']).lower()
         
+        # Identify current part in notebook
+        part_m = re.search(r'(?:part|exercise)\s+(\d+)', cell_text)
+        if part_m and ('#' in cell_text or 'part' in cell_text):
+            current_nb_part = int(part_m.group(1))
+
         # If we have questions left
-        if q_idx < len(questions):
-            # We might have multiple questions matching one cell (e.g. if questions are grouped)
-            # or we might have one question matching multiple cells.
-            
-            # Find the best match
-            matched = False
-            for i in range(q_idx, len(questions)):
-                q_text = questions[i]
-                m = re.search(r'(Q\d+|(?:\([a-z]\)))', q_text)
+        if q_idx < len(all_questions):
+            matched_indices = []
+            for i in range(q_idx, len(all_questions)):
+                p_num, q_text = all_questions[i]
+                
+                # If we're in a multi-part notebook, only match questions for the current part
+                if not target_part and current_nb_part is not None and p_num != current_nb_part:
+                    continue
+                
+                m = re.search(r'(Q(\d+)|(?:\(([a-z])\)))', q_text)
                 if m:
-                    marker = m.group(1).lower()
-                    # Check if cell contains the marker and looks like a question header
-                    if marker in cell_text and (
+                    marker_type = 'Q' if m.group(2) else 'letter'
+                    marker_val = m.group(2) or m.group(3)
+                    
+                    patterns = []
+                    if marker_type == 'Q':
+                        patterns = [f'q{marker_val}', f'question {marker_val}']
+                    else:
+                        patterns = [f'({marker_val})', f'question ({marker_val})']
+                    
+                    if any(p in cell_text for p in patterns) and (
                         'question' in cell_text or 
                         '##' in cell_text or 
                         '**' in cell_text or 
-                        (len(cell_text.strip()) < 50 and marker in cell_text.strip())
+                        (len(cell_text.strip()) < 60 and any(p in cell_text.strip() for p in patterns))
                     ):
-                        # Inject all questions from q_idx to i
-                        for k in range(q_idx, i + 1):
-                            if questions[k] not in injected_questions:
-                                new_q_cell = {
-                                    "cell_type": "markdown",
-                                    "metadata": {},
-                                    "source": [questions[k] + "\n"]
-                                }
-                                updated_cells.append(new_q_cell)
-                                injected_questions.add(questions[k])
-                        q_idx = i + 1
-                        matched = True
-                        break
-        
+                        matched_indices.append(i)
+            
+            if matched_indices:
+                # We should only inject questions that belong to the current part (if known)
+                # or questions that were skipped because they had no anchor but now we found an anchor for a later question in the same part.
+                
+                last_matched_idx = max(matched_indices)
+                # Inject all questions from q_idx to last_matched_idx that belong to the SAME part as the matched one
+                # or if we don't care about parts (single part notebook)
+                
+                target_p_num = all_questions[last_matched_idx][0]
+                
+                for k in range(q_idx, last_matched_idx + 1):
+                    p_k, q_k = all_questions[k]
+                    if q_k not in injected_questions:
+                        # Only inject if it's the right part
+                        if target_part or p_k == target_p_num:
+                            new_q_cell = {
+                                "cell_type": "markdown",
+                                "metadata": {},
+                                "source": [q_k + "\n"]
+                            }
+                            updated_cells.append(new_q_cell)
+                            injected_questions.add(q_k)
+                
+                # Update q_idx to the next question that hasn't been processed
+                # This is tricky. Let's just advance it if we've reached it.
+                if q_idx <= last_matched_idx:
+                     q_idx = last_matched_idx + 1
+
         updated_cells.append(cell)
-    
-    # If some questions were not matched, maybe they belong to the end?
-    # Or we failed to find anchors.
-    # The instruction says "use the code content to infer where the question belongs" if no anchors.
-    # This is harder. For now, let's see how the anchor-based works.
     
     nb['cells'] = updated_cells
     
@@ -121,31 +145,15 @@ def process_exam_dir(exam_dir):
     
     for nb_path in notebooks:
         nb_name = os.path.basename(nb_path)
-        # Try to map nb_name to part_num
         m = re.search(r'Part(\d+)', nb_name)
         if m:
             part_num = int(m.group(1))
-            if part_num in parts:
-                inject_into_notebook(nb_path, parts[part_num])
-                results.append(f"Updated {nb_name} with Part {part_num} questions")
-            else:
-                results.append(f"No questions found for Part {part_num} in {nb_name}")
-        elif nb_name == 'correction.ipynb':
-             # For correction.ipynb, it often contains all parts
-             all_qs = []
-             for p in sorted(parts.keys()):
-                 all_qs.extend(parts[p])
-             inject_into_notebook(nb_path, all_qs)
-             results.append(f"Updated {nb_name} with all questions")
-        elif len(notebooks) == 1:
-             # If it's the only notebook, it might be Part 1 or all parts
-             all_qs = []
-             for p in sorted(parts.keys()):
-                 all_qs.extend(parts[p])
-             inject_into_notebook(nb_path, all_qs)
-             results.append(f"Updated {nb_name} with all questions")
+            inject_into_notebook(nb_path, parts, part_num)
+            results.append(f"Updated {nb_name} with Part {part_num} questions")
         else:
-            results.append(f"Skipping {nb_name}: could not map to a part")
+            # Handle correction.ipynb or other single notebooks
+            inject_into_notebook(nb_path, parts)
+            results.append(f"Updated {nb_name} with relevant questions")
             
     return "\n".join(results)
 

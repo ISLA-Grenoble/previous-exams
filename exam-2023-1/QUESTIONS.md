@@ -134,18 +134,41 @@ Use Dtrain = D(50 | 1, 0.2) and Dtest = D(1000 | 1, 0.2).
 
 ## Part 4: Community detection (4 points)
 
-We consider Wayne Zachary's "karate club" network — a social network of friendships between members of a karate club at a US university. The club split into two parts (18 and 16 members) due to a dispute over fees. These two factions form the ground truth.
-
-```r
-load('./karate.rda')
-```
+### Question 1 (2 points)
 
 **(a)** Define in your own words the notion of modularity of a network and how it can be used to split a network into communities. Should your description include whether the modularity depends solely on the structure of the network? **(0.5 points)**
 
-**(b)** The true factions can be obtained via `V(karate)$Faction`. Use this information to calculate the modularity of the graph with this ground truth setup. **(1 point)**
+**(b)** The adjacency matrix of a 6-node directed graph is given by:
+$$
+\mathbf{A} = \left[
+\begin{array}{cccccc}
+0 & 1 & 1 & 0 & 0 & 0 \\
+1 & 0 & 1 & 0 & 0 & 0 \\
+1 & 1 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 & 1 & 1 \\
+0 & 0 & 0 & 1 & 0 & 1 \\
+0 & 0 & 0 & 1 & 1 & 0
+\end{array}
+\right]
+$$
+Build the graph, compute the modularity matrix $\mathbf{B}$, its leading eigenvector, and use its signs to choose the membership of each node. Calculate the modularity $Q$ of the resulting split. **(0.5 points)**
 
-**(c)** Calculate the modularity matrix using `modularity_matrix` and obtain its eigenvectors. Interpret the magnitude of the coordinates of the leading eigenvector (the one related to the largest eigenvalue) and explain how it relates to the importance of each vertex. How can we use this eigenvector to split the graph into two communities? **(1 point)**
+**(c)** Interpret the **magnitude of the coordinates** of the leading eigenvector. Which nodes have smaller magnitudes and why? **(0.5 points)**
 
-**(d)** Are there any nodes for which the split in (b) looks more ambiguous than others? Which aspect of the eigenvectors of the modularity matrix could be useful to check this information? **(0.75 points)**
+**(d)** If we wanted to split the network into more than two classes, how could we extend the spectral algorithm? **(0.25 points)**
 
-**(e)** What would happen if all the eigenvalues of the modularity matrix were smaller than zero? What would this indicate in terms of the structure of the network? **(0.75 points)**
+**(e)** What would happen if all the eigenvalues of the modularity matrix were smaller than zero? What would this indicate in terms of the structure of the network? **(0.25 points)**
+
+### Question 2 (2 points)
+
+**(a)** Build the adjacency matrix for the following 5-node graph:
+- Node 1: edges to 2, 4
+- Node 2: edges to 1, 3, 4
+- Node 3: edges to 2, 4, 5
+- Node 4: edges to 1, 2, 3, 5
+- Node 5: edges to 3, 4
+
+Create a similarity matrix $\boldsymbol{\Sigma}$ where each coordinate $(i,j)$ is the cosine similarity between the adjacency vectors of nodes $i$ and $j$. **(1 point)**
+
+**(b)** Using the distance $\mathbf{D} = 1 - \boldsymbol{\Sigma}$, perform hierarchical clustering with single linkage and plot the resulting dendrogram. **(1 point)**
+
