@@ -15,7 +15,7 @@ names(D)[pt] = "Y"
 reg = lm(Y~., data=D)
 ```
 
-**Q1.** What does the script above do? What is the true distribution for the random variable Y given the first 200 columns of `D` (X₁, …, X₂₀₀)? Give the name and parameters of this distribution.
+**Q1.** What does the script above do? What is the true distribution for the random variable $Y$ given the first 200 columns of `D` ($X_1, \ldots, X_{200}$)? Give the name and parameters of this distribution.
 
 **Q2.** Write an equation defining the model estimated by the `lm` command. What is the difference between this model and the one defined in Q1?
 

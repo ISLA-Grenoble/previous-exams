@@ -4,22 +4,22 @@
 
 Each question has exactly one correct answer.
 
-**Q1.** Given d-dimensional data x_{i=1}^N, you run PCA and pick P principal components. Can you always reconstruct any data point xᵢ from the P principal components with zero reconstruction error?
-- (A) Yes, if P < d.
-- (B) Yes, if P = d.
-- (C) Yes, if P < N.
+**Q1.** Given $d$-dimensional data $x_{i=1}^N$, you run PCA and pick $P$ principal components. Can you always reconstruct any data point $x_i$ from the $P$ principal components with zero reconstruction error?
+- (A) Yes, if $P < d$.
+- (B) Yes, if $P = d$.
+- (C) Yes, if $P < N$.
 - (D) No, always.
 
-**Q2.** Which of the following transformations to a data matrix X will affect the principal components obtained through PCA?
-- (A) Adding a constant value to all elements of X.
-- (B) Multiplying one of the features of X by a constant.
-- (C) Adding an extra feature to X (an extra column) that is constant across all data points.
+**Q2.** Which of the following transformations to a data matrix $X$ will affect the principal components obtained through PCA?
+- (A) Adding a constant value to all elements of $X$.
+- (B) Multiplying one of the features of $X$ by a constant.
+- (C) Adding an extra feature to $X$ (an extra column) that is constant across all data points.
 - (D) None of the above answers.
 
-**Q3.** In linear regression, we model p(y | x) ~ N(βᵀx + β₀, σ²). The irreducible error in this model is:
-- (A) σ²
-- (B) E[y | x]
-- (C) E[(y − E[y | x])² | x]
+**Q3.** In linear regression, we model $p(y \mid x) \sim \mathcal{N}(\beta^\top x + \beta_0, \sigma^2)$. The irreducible error in this model is:
+- (A) $\sigma^2$
+- (B) $E[y \mid x]$
+- (C) $E[(y - E[y \mid x])^2 \mid x]$
 - (D) None of the above.
 
 **Q4.** The decision boundaries of a logistic regression model:
@@ -34,13 +34,13 @@ Each question has exactly one correct answer.
 - (C) Ridge has smaller bias, larger variance.
 - (D) Ridge has smaller bias, smaller variance.
 
-**Q6.** Suppose you want to split a graph G into two subgraphs. Let L be G's Laplacian matrix. Which of the following could help you find a good split?
-- (A) The eigenvector corresponding to the second-largest eigenvalue of L.
-- (B) The eigenvector corresponding to the second-smallest eigenvalue of L.
-- (C) The left singular vector corresponding to the second-largest singular value of L.
+**Q6.** Suppose you want to split a graph $G$ into two subgraphs. Let $L$ be $G$'s Laplacian matrix. Which of the following could help you find a good split?
+- (A) The eigenvector corresponding to the second-largest eigenvalue of $L$.
+- (B) The eigenvector corresponding to the second-smallest eigenvalue of $L$.
+- (C) The left singular vector corresponding to the second-largest singular value of $L$.
 - (D) None of the above.
 
-**Q7.** We define a 2-dimensional dataset and process it using `StandardScaler` from `sklearn` with its default parameters. The dataset has feature X1 centered around 4 with unit variance and feature X2 uniformly spread around 0 with larger variance. Which of the four presented preprocessings (A, B, C, D — shown in the figure in the exam PDF) results from applying `StandardScaler`?
+**Q7.** We define a 2-dimensional dataset and process it using `StandardScaler` from `sklearn` with its default parameters. The dataset has feature $X_1$ centered around $4$ with unit variance and feature $X_2$ uniformly spread around $0$ with larger variance. Which of the four presented preprocessings (A, B, C, D — shown in the figure in the exam PDF) results from applying `StandardScaler`?
 - (A) Preprocessing A
 - (B) Preprocessing B
 - (C) Preprocessing C
@@ -59,22 +59,22 @@ Each question has exactly one correct answer.
 - (D) None of the above.
 
 **Q10.** Suppose you have data with lots of outliers. Everything else being equal, and assuming that you do not do any pre-processing, what cost function will be less affected by these outliers?
-- (A) (y − f(x))²
-- (B) |y − f(x)|
-- (C) (1/y) × (y − f(x))²
-- (D) (log(y) − f(x))²
+- (A) $(y - f(x))^2$
+- (B) $|y - f(x)|$
+- (C) $\frac{1}{y} \times (y - f(x))^2$
+- (D) $(\log(y) - f(x))^2$
 
-**Q11.** The figure below shows three different datasets (A, B, C) and the predictions of the same linear model (the line y = x) used to predict each of them. Choose the correct ordering with respect to the MSE (Mean Squared Error) loss on each dataset:
-- (A) MSE_B > MSE_A > MSE_C
-- (B) MSE_B > MSE_C > MSE_A
+**Q11.** The figure below shows three different datasets (A, B, C) and the predictions of the same linear model (the line $y = x$) used to predict each of them. Choose the correct ordering with respect to the MSE (Mean Squared Error) loss on each dataset:
+- (A) $\text{MSE}_B > \text{MSE}_A > \text{MSE}_C$
+- (B) $\text{MSE}_B > \text{MSE}_C > \text{MSE}_A$
 - (C) At least two of the MSE losses are equal.
-- (D) MSE_A > MSE_B > MSE_C
+- (D) $\text{MSE}_A > \text{MSE}_B > \text{MSE}_C$
 
 **Q12.** Considering the same figure from Q11, choose the correct ordering with respect to the MAE (Mean Absolute Error) loss on each dataset:
-- (A) MAE_A > MAE_C > MAE_B
-- (B) MAE_C > MAE_B > MAE_A
+- (A) $\text{MAE}_A > \text{MAE}_C > \text{MAE}_B$
+- (B) $\text{MAE}_C > \text{MAE}_B > \text{MAE}_A$
 - (C) At least two of MAE losses are equal.
-- (D) MAE_B > MAE_C > MAE_A
+- (D) $\text{MAE}_B > \text{MAE}_C > \text{MAE}_A$
 
 ---
 
@@ -82,42 +82,42 @@ Each question has exactly one correct answer.
 
 Set `numpy.random.seed(0)` at the beginning.
 
-**(a)** Simulate a dataset of size N = 1000 of the following generating model:
+**(a)** Simulate a dataset of size $N = 1000$ of the following generating model:
 
-X₁,ᵢ = ε₁,ᵢ  
-X₂,ᵢ = 4X₁,ᵢ + ε₂,ᵢ  
-Yᵢ = X₂,ᵢ + X₁,ᵢ − 5 + ε₃,ᵢ
+$$X_{1,i} = \varepsilon_{1,i}$$
+$$X_{2,i} = 4X_{1,i} + \varepsilon_{2,i}$$
+$$Y_i = X_{2,i} + X_{1,i} - 5 + \varepsilon_{3,i}$$
 
-where i ∈ {1, …, N} and the εᵢⱼ are independent N(0, 1) random variables. For a given i, what is the distribution of (X₁,ᵢ, X₂,ᵢ)? Plot the cloud of points of the simulated values. What is its shape? Can you write a closed-form expression for it? **(2 points)**
+where $i \in \{1, \ldots, N\}$ and the $\varepsilon_{j,i}$ are independent $\mathcal{N}(0, 1)$ random variables. For a given $i$, what is the distribution of $(X_{1,i}, X_{2,i})$? Plot the cloud of points of the simulated values. What is its shape? Can you write a closed-form expression for it? **(2 points)**
 
 **(b)** Consider the following two regression models:
 
-Model A: Yᵢ = α₁X₁,ᵢ + α₀ + ε̃_{A,i}  
-Model B: Yᵢ = β₂X₂,ᵢ + β₀ + ε̃_{B,i}
+$$\text{Model A:} \quad Y_i = \alpha_1 X_{1,i} + \alpha_0 + \tilde{\varepsilon}_{A,i}$$
+$$\text{Model B:} \quad Y_i = \beta_2 X_{2,i} + \beta_0 + \tilde{\varepsilon}_{B,i}$$
 
-What should be the values of α̂₀, α̂₁, σ̂²_A, β̂₀, β̂₂, σ̂²_B when N → ∞? Consider N = 1000 and check whether estimates are close to the true values. Now do `np.random.seed(3)` and simulate again with n = 10. Estimate the parameters. What happens? **(2 points)**
+What should be the values of $\hat{\alpha}_0$, $\hat{\alpha}_1$, $\hat{\sigma}^2_A$, $\hat{\beta}_0$, $\hat{\beta}_2$, $\hat{\sigma}^2_B$ when $N \to \infty$? Consider $N = 1000$ and check whether estimates are close to the true values. Now do `np.random.seed(3)` and simulate again with $n = 10$. Estimate the parameters. What happens? **(2 points)**
 
-**(c)** Consider the full model: Yᵢ = γ₂X₂,ᵢ + γ₁X₁,ᵢ + γ₀ + εᵢ. For the previously simulated data with n = 10, estimate γ̂₀, γ̂₁, γ̂₂, σ̂² and compare them with the parameters from (b). What can you say about the effects of X₁ and X₂ on Y? And about their correlation? **(1 point)**
+**(c)** Consider the full model: $Y_i = \gamma_2 X_{2,i} + \gamma_1 X_{1,i} + \gamma_0 + \varepsilon_i$. For the previously simulated data with $n = 10$, estimate $\hat{\gamma}_0$, $\hat{\gamma}_1$, $\hat{\gamma}_2$, $\hat{\sigma}^2$ and compare them with the parameters from (b). What can you say about the effects of $X_1$ and $X_2$ on $Y$? And about their correlation? **(1 point)**
 
 ---
 
 ## Part 3: AdaBoost (5 points)
 
-Recall the AdaBoost algorithm with decision stumps. The algorithm iteratively trains weak classifiers hₜ, choosing step-sizes αₜ = (1/2) log((1 − εₜ)/εₜ) and updating sample weights Dₜ₊₁. The final hypothesis is H(x) = sign(Σₜ αₜ hₜ(x)).
+Recall the AdaBoost algorithm with decision stumps. The algorithm iteratively trains weak classifiers $h_t$, choosing step-sizes $\alpha_t = \frac{1}{2} \log\frac{1 - \varepsilon_t}{\varepsilon_t}$ and updating sample weights $D_{t+1}$. The final hypothesis is $H(x) = \text{sign}\!\left(\sum_t \alpha_t h_t(x)\right)$.
 
-The figure in the exam PDF shows three iterations of AdaBoost using a depth-1 decision tree (decision stump) on a given dataset. Each dashed line represents the decision boundary of hₜ at iteration t ∈ {1, 2, 3}, and the shaded regions represent the predictions.
+The figure in the exam PDF shows three iterations of AdaBoost using a depth-1 decision tree (decision stump) on a given dataset. Each dashed line represents the decision boundary of $h_t$ at iteration $t \in \{1, 2, 3\}$, and the shaded regions represent the predictions.
 
-**(a)** For each iteration in the figure, find the weighted training error εₜ and importance αₜ of hₜ. For t = 2 and t = 3, find the weight normalization Zₜ and record the updated weight for each point. **(1 point)**
+**(a)** For each iteration in the figure, find the weighted training error $\varepsilon_t$ and importance $\alpha_t$ of $h_t$. For $t = 2$ and $t = 3$, find the weight normalization $Z_t$ and record the updated weight for each point. **(1 point)**
 
 **(b)** Load the `datasets/dataset_ex3.csv` file into a dataframe and make a scatter plot of the data points using the same markers and colors as in the figure (hint: `marker='+'` for positive class, `marker='_'` for negative class in matplotlib). **(1 point)**
 
-**(c)** With the help of `DecisionTreeClassifier` from sklearn, fit a decision stump h₁ on the dataset corresponding to the first iteration of AdaBoost. Remember to set a uniform weight w₁ over all data points and ensure labels yᵢ ∈ {−1, +1}. Show that your predictions match those from the first iteration in the figure. **(1 point)**
+**(c)** With the help of `DecisionTreeClassifier` from sklearn, fit a decision stump $h_1$ on the dataset corresponding to the first iteration of AdaBoost. Remember to set a uniform weight $w_1$ over all data points and ensure labels $y_i \in \{-1, +1\}$. Show that your predictions match those from the first iteration in the figure. **(1 point)**
 
-**(d)** Calculate the new weights w₂ of the data points based on predictions from iteration t = 1. Use them to fit a new decision stump h₂ on the weighted dataset (hint: use the optional argument `sample_weight` in sklearn's `fit` method). Show that your predictions match those from the second iteration in the figure. **(0.5 points)**
+**(d)** Calculate the new weights $w_2$ of the data points based on predictions from iteration $t = 1$. Use them to fit a new decision stump $h_2$ on the weighted dataset (hint: use the optional argument `sample_weight` in sklearn's `fit` method). Show that your predictions match those from the second iteration in the figure. **(0.5 points)**
 
-**(e)** Calculate the new weights w₃ of the data points based on predictions from iteration t = 2. Use them to fit a new decision stump h₃ on the weighted dataset. Show that your predictions match those from the third iteration in the figure. **(0.5 points)**
+**(e)** Calculate the new weights $w_3$ of the data points based on predictions from iteration $t = 2$. Use them to fit a new decision stump $h_3$ on the weighted dataset. Show that your predictions match those from the third iteration in the figure. **(0.5 points)**
 
-**(f)** Calculate the training error of the final ensemble classifier, i.e. the classifier that for each datapoint x outputs H(x) = sign(α₁h₁(x) + α₂h₂(x) + α₃h₃(x)). **(1 point)**
+**(f)** Calculate the training error of the final ensemble classifier, i.e. the classifier that for each datapoint $x$ outputs $H(x) = \text{sign}(\alpha_1 h_1(x) + \alpha_2 h_2(x) + \alpha_3 h_3(x))$. **(1 point)**
 
 ---
 
@@ -135,7 +135,7 @@ F = np.loadtxt('datasets/karate_factions.csv')   # ground truth factions
 
 **(b)** Using the equations seen in class, calculate the modularity matrix of the graph. **(0.5 points)**
 
-**(c)** Using the equations seen in class, calculate the modularity Q of the graph when fixing the classes of each node according to their ground truth factions as given in array F. (Hint: encode the factions with −1 and +1 as discussed in class.) **(1 point)**
+**(c)** Using the equations seen in class, calculate the modularity $Q$ of the graph when fixing the classes of each node according to their ground truth factions as given in array $F$. (Hint: encode the factions with $-1$ and $+1$ as discussed in class.) **(1 point)**
 
 **(d)** Based on the eigenvalue and eigenvector decomposition of the modularity matrix, split the graph into two communities. Interpret the magnitude of the coordinates of the leading eigenvector (the one related to the largest eigenvalue) and explain how it can be related to the "faction ambiguity" of each vertex in the graph. Are there any nodes for which the split looks more ambiguous than others? Relate your answer with the figure of the graph. **(1.5 points)**
 
